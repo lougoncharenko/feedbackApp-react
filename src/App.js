@@ -1,40 +1,46 @@
-import { v4 as uuidv4 } from 'uuid'
-import {useState} from 'react'
+
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+// import {useState} from 'react'
 import Header from "./components/header"
 import FeedbackData from './data/FeedbackData'
 import FeedbackList from './components/FeedbackList'
 import FeedbackStats from './components/FeedbackStats'
 import FeedbackForm from './components/FeedbackForm'
+import AboutPage from './pages/AboutPage'
+import AboutIconLink from './components/AboutIconLink'
+import {FeedbackProvider} from './context/FeedbackContext'
 
 function App(){
- const [feedback, setFeedback]= useState(FeedbackData)
+  //no longer need below line of code because of context
+//  const [feedback, setFeedback]= useState(FeedbackData)
 
- const addFeedback= (newFeedback) => {
-   newFeedback.id=uuidv4()
-  setFeedback([newFeedback,...feedback]) //using spread operator to create a new array
-
-}
-
- const deleteFeedback= (id) => {
-   if(window.confirm('Are you sure you want to delete?')){
-      setFeedback(feedback.filter((item) => item.id !== id))
-      //filter loops through with a condition what to filter out
-   }
-  
-
- }
- 
   return  (
-    <>
-    <Header />
-    <div className='container'> 
-    <FeedbackForm handleAdd={addFeedback}/>
-    <FeedbackStats feedback ={feedback}/>
-    <FeedbackList feedback={feedback}
-    handleDelete={deleteFeedback}/>
-    </div>
-    </>
-  
+    <FeedbackProvider>
+      <Router>
+      <Header />
+      <div className='container'>
+        <Routes>
+          <Route
+            exact path='/'
+            element={
+              <>
+                 <FeedbackForm />
+                 <FeedbackStats />
+                 <FeedbackList />
+              </>
+            }
+          ></Route>
+            
+
+          <Route path='/about' element={<AboutPage />} />
+        </Routes>
+
+        <AboutIconLink />
+
+      </div>
+    </Router>
+
+    </FeedbackProvider>
   )
 }
 
